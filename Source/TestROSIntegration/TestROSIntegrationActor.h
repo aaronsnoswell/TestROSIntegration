@@ -16,7 +16,11 @@ class TESTROSINTEGRATION_API ATestROSIntegrationActor : public AActor
 	GENERATED_BODY()
 
 private:
-	UTopic *ExampleTopic;
+	UTopic *ExamplePublishTopic;
+	TSharedPtr<ROSMessages::std_msgs::String> PublishStringMessage;
+
+	UTopic *ExampleSubscribeTopic;
+
 	
 public:	
 	// Sets default values for this actor's properties

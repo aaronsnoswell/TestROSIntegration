@@ -17,10 +17,21 @@ void ATestROSIntegrationActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ExampleTopic = NewObject<UTopic>(UTopic::StaticClass());
-	UROSIntegrationGameInstance* rosinst = Cast<UROSIntegrationGameInstance>(GetGameInstance());
-	ExampleTopic->Init(rosinst->_Ric, TEXT("/chatter_foozle"), TEXT("std_msgs/String"));
-	
+	UROSIntegrationGameInstance* GI = Cast<UROSIntegrationGameInstance>(GetGameInstance());
+
+	ExamplePublishTopic = NewObject<UTopic>(UTopic::StaticClass());
+	ExamplePublishTopic->Init(GI->_Ric, TEXT("/chatter_foozle"), TEXT("std_msgs/String"));
+	PublishStringMessage = TSharedPtr<ROSMessages::std_msgs::String>(new ROSMessages::std_msgs::String("This is an example"));
+
+	ExampleSubscribeTopic = NewObject<UTopic>(UTopic::StaticClass());
+	ExampleSubscribeTopic->Init(GI->_Ric, TEXT("/chatter"), TEXT("std_msgs/String"));
+	std::function<void(TSharedPtr<FROSBaseMsg>)> SubscribeCallback = [](TSharedPtr<FROSBaseMsg> msg) -> void 
+	{
+		UE_LOG(LogTemp, Log, TEXT("GOT INCOMING /CHATTER"));
+		return;
+	};
+
+	ExampleSubscribeTopic->Subscribe(SubscribeCallback);
 }
 
 // Called every frame
@@ -28,8 +39,7 @@ void ATestROSIntegrationActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	TSharedPtr<ROSMessages::std_msgs::String> StringMessage(new ROSMessages::std_msgs::String("This is an example"));
-	ExampleTopic->Publish(StringMessage);
+	//ExampleTopic->Publish(StringMessage);
 
 }
 
