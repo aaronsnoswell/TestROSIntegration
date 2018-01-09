@@ -28,6 +28,18 @@ void ATestROSIntegrationActor::BeginPlay()
 	std::function<void(TSharedPtr<FROSBaseMsg>)> SubscribeCallback = [](TSharedPtr<FROSBaseMsg> msg) -> void 
 	{
 		UE_LOG(LogTemp, Log, TEXT("GOT INCOMING /CHATTER"));
+
+		if (msg->_MessageType.Equals("std_msgs/String"))
+		{
+			FROSBaseMsg *test = msg.Get();
+			ROSMessages::std_msgs::String *StringMessage = nullptr;
+			StringMessage = (ROSMessages::std_msgs::String *)(test);
+
+			if (StringMessage != nullptr)
+			{
+				UE_LOG(LogTemp, Log, TEXT("It was: %s"), (*(StringMessage->_Data)));
+			}
+		}
 		return;
 	};
 
